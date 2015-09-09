@@ -1094,7 +1094,7 @@ password_query = SELECT email as user, password FROM virtual_users WHERE email='
 #   user_query = SELECT dir AS home, user AS uid, group AS gid FROM users where userid = '%u'
 #   user_query = SELECT home, 501 AS uid, 501 AS gid FROM users WHERE userid = '%u'
 #
-#user_query = \
+user_query = SELECT 5000 AS uid, 5000 AS gid, '/var/mail/vhosts/%d/%n' as home FROM virtual_users WHERE email = '%u';
 #  SELECT home, uid, gid \
 #  FROM users WHERE username = '%n' AND domain = '%d'
 # If you wish to avoid two SQL lookups (passdb + userdb), you can use
@@ -1290,6 +1290,57 @@ ssl_key = </etc/dovecot/private/dovecot.pem
 #ssl_parameters_regenerate = 168
 # SSL ciphers to use
 #ssl_cipher_list = ALL:!LOW:!SSLv2:!EXP:!aNULL
+EOF
+
+cat > /etc/dovecot/conf.d/10-ssl.conf <<EOF
+##
+## LDA specific settings (also used by LMTP)
+##
+
+# Address to use when sending rejection mails.
+# Default is postmaster@<your domain>. %d expands to recipient domain.
+postmaster_address = postmaster@$respuestadominio
+
+# Hostname to use in various parts of sent mails (e.g. in Message-Id) and
+# in LMTP replies. Default is the system's real hostname@domain.
+#hostname =
+
+# If user is over quota, return with temporary failure instead of
+# bouncing the mail.
+#quota_full_tempfail = no
+
+# Binary to use for sending mails.
+#sendmail_path = /usr/sbin/sendmail
+
+# If non-empty, send mails via this SMTP host[:port] instead of sendmail.
+#submission_host =
+
+# Subject: header to use for rejection mails. You can use the same variables
+# as for rejection_reason below.
+#rejection_subject = Rejected: %s
+
+# Human readable error message for rejection mails. You can use variables:
+#  %n = CRLF, %r = reason, %s = original subject, %t = recipient
+#rejection_reason = Your message to <%t> was automatically rejected:%n%r
+
+# Delimiter character between local-part and detail in email address.
+#recipient_delimiter = +
+
+# Header where the original recipient address (SMTP's RCPT TO: address) is taken
+# from if not available elsewhere. With dovecot-lda -a parameter overrides this.
+# A commonly used header for this is X-Original-To.
+#lda_original_recipient_header =
+
+# Should saving a mail to a nonexistent mailbox automatically create it?
+#lda_mailbox_autocreate = no
+
+# Should automatically created mailboxes be also automatically subscribed?
+#lda_mailbox_autosubscribe = no
+
+protocol lda {
+  # Space separated list of plugins to load (default is global mail_plugins).
+  #mail_plugins = $mail_plugins
+}
 EOF
 
 #echo -e "Mostrando fichero recién configurado:  \n "

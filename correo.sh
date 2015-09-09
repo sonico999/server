@@ -1292,7 +1292,7 @@ ssl_key = </etc/dovecot/private/dovecot.pem
 #ssl_cipher_list = ALL:!LOW:!SSLv2:!EXP:!aNULL
 EOF
 
-cat > /etc/dovecot/conf.d/10-ssl.conf <<EOF
+cat > /etc/dovecot/conf.d/15-lda.conf <<EOF
 ##
 ## LDA specific settings (also used by LMTP)
 ##
